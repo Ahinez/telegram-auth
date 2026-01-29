@@ -1,3 +1,4 @@
+import cors from "cors";
 import { validate, parse, type InitData } from "@tma.js/init-data-node";
 import express, {
   type ErrorRequestHandler,
@@ -88,11 +89,21 @@ const defaultErrorMiddleware: ErrorRequestHandler = (err, _req, res) => {
 };
 
 // Your secret bot token.
-const token = "1234567890:ABC";
+const token = "8450098681:AAFJ8gLWb5bQnXEt5J71c9AkconK9c1EtrU";
 
 // Create an Express applet and start listening to port 3000.
 const app = express();
 
+app.use(
+  cors({
+    origin: "https://6s1qnw1p-5173.inc1.devtunnels.ms",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+
+app.use(express.json());
 app.use(authMiddleware);
 app.get("/", showInitDataMiddleware);
 app.use(defaultErrorMiddleware);
