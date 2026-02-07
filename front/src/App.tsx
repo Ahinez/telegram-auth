@@ -1,18 +1,41 @@
+import { useEffect } from "react";
+
 const App = () => {
   window.Telegram?.WebApp?.ready();
 
-  const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const initData = window.Telegram?.WebApp?.initData;
 
-  return (
-    <ul>
-      <li>{user?.first_name}</li>
-      <li>{user?.last_name}</li>
-      <li>{user?.username}</li>
-      <li>{user?.id}</li>
-      <li>{user?.language_code}</li>
-      <img src={user?.photo_url} />
-    </ul>
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!initData) return;
+
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/init-data`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: initData,
+            },
+            body: JSON.stringify({ initData }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Success:", data);
+        // Обработка данных
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, [initData]);
 };
 
 export default App;
